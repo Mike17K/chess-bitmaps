@@ -1,0 +1,3 @@
+C:/Users/User/Desktop/projects/cpp/chess-next-stockfish/build/CMakeFiles/run.dir
+C:/Users/User/Desktop/projects/cpp/chess-next-stockfish/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/User/Desktop/projects/cpp/chess-next-stockfish/build/CMakeFiles/ZERO_CHECK.dir
