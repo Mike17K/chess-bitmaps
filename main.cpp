@@ -32,12 +32,12 @@ int main()
   b->rookAttacksGen();
   b->nightAttacksGen();
 
-  bShow(b->wA);
-  bShow(b->bA);
+  bShow(b->wN);
+  bShow(_file(0x8000000000000000));
 
   //*
   int i = 0;
-  std::chrono::milliseconds duration(100); // 1 second duration
+  std::chrono::milliseconds duration(1000); // 1 second duration
   // loop for 1 second
   auto start = std::chrono::high_resolution_clock::now();
   while (std::chrono::high_resolution_clock::now() - start < duration)
@@ -53,9 +53,10 @@ int main()
   while (std::chrono::high_resolution_clock::now() - start < duration)
   {
     i2++;
-    b->rookAttacksGen();
-    b->nightAttacksGen();
-    //    function to time
+    // b->rookAttacksGen();
+    // b->nightAttacksGen();
+    //     function to time
+    _rank(0x10);
   }
 
   std::cout << "i2 increased to " << i2 << std::endl;
