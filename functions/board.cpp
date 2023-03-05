@@ -243,56 +243,37 @@ void Board::rookAttacksGen()
 
 void Board::rookAttacksGen2()
 {
-    uint64_t tmp_w = this->wR; // for white
-    uint64_t tmp_b = this->bR; // for black
 
     uint64_t attacking_sq_w = 0;
     uint64_t attacking_sq_b = 0;
 
-    int directions[4] = {8, -1, -8, 1};
-    uint64_t limitboards[4] = {Rank1BB, FileHBB, Rank8BB, FileABB}; // based of the directions order we put the limit testing here
+    uint64_t tmp_w = this->wR;
+    uint64_t tmp_b = this->bR;
 
     uint64_t blackPieces = this->bB | this->bN | this->bR | this->bp | this->bQ | this->bK; // posibly make it class atr
     uint64_t whitePieces = this->wB | this->wN | this->wR | this->wp | this->wQ | this->wK; // this too
     uint64_t allPieces = blackPieces | whitePieces;
 
-    for (int direction = 0; direction < 4; direction++)
-    { // for each direction
-        tmp_w = this->wR;
-        tmp_b = this->bR;
-        while (tmp_w != 0 || tmp_b != 0)
-        {
-            tmp_w &= limitboards[direction]; // this line is clearing if the limits are reached
-            tmp_b &= limitboards[direction]; // this line is clearing if the limits are reached
+    // until no '1' in rookspositions
+    while (tmp_w != 0x00 || tmp_b != 0x00)
+    {
+        // take lsb '1'
+        uint64_t t_w = lsb(tmp_w);
+        uint64_t t_b = lsb(tmp_b);
 
-            // new pos calculation
-            uint64_t new_pos_w = (directions[direction] < 0) ? tmp_w >> -directions[direction] : tmp_w << directions[direction];
-            uint64_t new_pos_b = (directions[direction] < 0) ? tmp_b >> -directions[direction] : tmp_b << directions[direction];
+        // find attacks
+        uint64_t newAttacks_w = (lsb((((t_w * Rank1BB) & _rank(t_w)) & allPieces) ^ t_w) - t_w) << 1; // fix
+        uint64_t newAttacks_b = (lsb((((t_b * Rank1BB) & _rank(t_b)) & allPieces) ^ t_b) - t_b) << 1; // fix
 
-            // find the intersactions in general
-            uint64_t intersections_w = allPieces & new_pos_w;
-            uint64_t intersections_b = allPieces & new_pos_b;
+        // add moves to final map
+        attacking_sq_w |= newAttacks_w;
+        attacking_sq_b |= newAttacks_b;
 
-            // uint64_t same_intersactions_w = whitePieces & new_pos_w;
-            // uint64_t same_intersactions_b = blackPieces & new_pos_b;
-
-            // uint64_t different_intersactions_w = blackPieces & new_pos_w;
-            // uint64_t different_intersactions_b = whitePieces & new_pos_b;
-
-            attacking_sq_w |= new_pos_w; // attacking sq are also the sq of the intersactions when there are same color pieces too
-            attacking_sq_b |= new_pos_b; // attacking sq are also the sq of the intersactions when there are same color pieces too
-
-            // check for intersactions with same color pieces
-            // check for intersactions with oposite color pieces
-            // remove the intersactions from the new_pos cause the pieces can now overlap
-            new_pos_w -= intersections_w; // same_intersactions_w | different_intersactions_w;
-            new_pos_b -= intersections_b; // same_intersactions_b | different_intersactions_b;
-
-            // set last position to new position
-            tmp_w = new_pos_w;
-            tmp_b = new_pos_b;
-        }
+        // remove '1'
+        tmp_w = pop_lsb(tmp_w);
+        tmp_b = pop_lsb(tmp_b);
     }
+
     this->wA |= attacking_sq_w; // add to the array the extra attacks
     this->bA |= attacking_sq_b; // add to the array the extra attacks
 };

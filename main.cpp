@@ -23,43 +23,48 @@ int main()
       0  1  2  3  4  5  6  7
   */
 
-  Board *b = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+  Board *b = new Board("rnbqkbnr/pppppppp/8/3r2R/8/8/PPPPPPPP/1NBQKBN1 w KQkq - 0 1");
 
   bShow(b->wK | b->bK | b->wQ | b->bQ | b->wN | b->bN | b->wB | b->bB | b->wR | b->bR | b->bp | b->wp);
 
-  cout << sizeof(*b) << endl;
+  b->rookAttacksGen2();
 
-  b->rookAttacksGen();
-  b->nightAttacksGen();
+  bShow(b->wA);
+  bShow(b->bA);
 
-  bShow(b->wN);
-  bShow(_file(0x8000000000000000));
-
-  //*
-  int i = 0;
-  std::chrono::milliseconds duration(1000); // 1 second duration
   // loop for 1 second
+  const int N = 1000000;
+
   auto start = std::chrono::high_resolution_clock::now();
-  while (std::chrono::high_resolution_clock::now() - start < duration)
+  for (int i = 0; i < N; i++)
   {
-    i++;
+    b->rookAttacksGen();
   }
+  auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+  std::cout << "Duration: " << duration1.count() << " microseconds" << std::endl;
 
-  std::cout << "i increased to " << i << std::endl;
-
-  int i2 = 0;
-  // loop for 1 second
   start = std::chrono::high_resolution_clock::now();
-  while (std::chrono::high_resolution_clock::now() - start < duration)
+  for (int i = 0; i < N; i++)
   {
-    i2++;
-    // b->rookAttacksGen();
-    // b->nightAttacksGen();
-    //     function to time
-    _rank(0x10);
+    b->nightAttacksGen();
   }
+  auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+  std::cout << "Duration: " << duration2.count() << " microseconds" << std::endl;
 
-  std::cout << "i2 increased to " << i2 << std::endl;
-  std::cout << "Function score is " << (float)(i2) / i * 100 << "% of the max." << std::endl;
-  //*/
+  start = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; i++)
+  {
+    b->rookAttacksGen2();
+  }
+  auto duration3 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+  std::cout << "Duration: " << duration3.count() << " microseconds" << std::endl;
+
+  start = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; i++)
+  {
+  }
+  auto duration4 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+  std::cout << "Clock Duration: " << duration4.count() << " microseconds" << std::endl;
+
+  //  std::cout << "Function score is " << (float)(i2) / i * 100 << "% of the max." << std::endl;
 }
