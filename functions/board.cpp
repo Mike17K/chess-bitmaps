@@ -262,8 +262,17 @@ void Board::rookAttacksGen2()
         uint64_t t_b = lsb(tmp_b);
 
         // find attacks
-        uint64_t newAttacks_w = (lsb((((t_w * Rank1BB) & _rank(t_w)) & allPieces) ^ t_w) - t_w) << 1; // fix
-        uint64_t newAttacks_b = (lsb((((t_b * Rank1BB) & _rank(t_b)) & allPieces) ^ t_b) - t_b) << 1; // fix
+        uint64_t newAttacks_w = (t_w * Rank1BB) & _rank(t_w) ^ t_w;
+        uint64_t fisrt_blocking_piece_w = (newAttacks_w & allPieces) ? lsb(newAttacks_w & allPieces) : 0x0;
+        newAttacks_w = (fisrt_blocking_piece_w) ? (fisrt_blocking_piece_w - t_w) << 1 : newAttacks_w;
+
+        newAttacks_w = (t_w * Rank1BB) & _rank(t_w) ^ t_w;
+        fisrt_blocking_piece_w = (newAttacks_w & allPieces) ? lsb(newAttacks_w & allPieces) : 0x0;
+        newAttacks_w = (fisrt_blocking_piece_w) ? (fisrt_blocking_piece_w - t_w) << 1 : newAttacks_w;
+
+        uint64_t newAttacks_b = (t_b * Rank1BB) & _rank(t_b) ^ t_b;
+        uint64_t fisrt_blocking_piece_b = (newAttacks_b & allPieces) ? lsb(newAttacks_b & allPieces) : 0x0;
+        newAttacks_b = (fisrt_blocking_piece_b) ? (fisrt_blocking_piece_b - t_b) << 1 : newAttacks_b;
 
         // add moves to final map
         attacking_sq_w |= newAttacks_w;
