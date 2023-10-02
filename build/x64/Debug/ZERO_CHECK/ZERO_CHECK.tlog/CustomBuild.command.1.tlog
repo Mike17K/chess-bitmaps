@@ -1,0 +1,10 @@
+^C:\USERS\USER\DESKTOP\PROJECTS\CPP\CHESSBITMAPS\BUILD\CMAKEFILES\676F653F3BF6157313C282E0A18E437F\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/User/Desktop/projects/cpp/ChessBitmaps -BC:/Users/User/Desktop/projects/cpp/ChessBitmaps/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/User/Desktop/projects/cpp/ChessBitmaps/build/chess.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
