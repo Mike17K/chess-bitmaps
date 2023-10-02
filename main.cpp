@@ -23,23 +23,16 @@ int main()
       0  1  2  3  4  5  6  7
     */
 
-    Board *b = new Board("1nbqkbn1/pppppppp/8/3r2R/8/8/PPPPPPPP/1NBQKBN1 w KQkq - 0 1");
+    Board *b = new Board("1nbqkbn1/pppppppp/8/3r2Q/8/8/PPPPPPPP/1NBQKBN1 w KQkq - 0 1");
 
     bShow(b->wK | b->bK | b->wQ | b->bQ | b->wN | b->bN | b->wB | b->bB | b->wR | b->bR | b->bp | b->wp);
-
-    // b->rookAttacksGen();
-
-    bShow(b->wA);
-    bShow(b->bA);
-
     //*
     // loop for 1 second
-    const int N = 1000000;
+    const int N = 1;
 
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < N; i++)
     {
-        b->rookAttacksGen();
     }
     auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
     std::cout << "Duration: " << duration1.count() << " microseconds" << std::endl;
@@ -47,7 +40,7 @@ int main()
     start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < N; i++)
     {
-        b->nightAttacksGen();
+        b->qeenAttacksGen();
     }
     auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
     std::cout << "Duration: " << duration2.count() << " microseconds" << std::endl;
@@ -55,7 +48,6 @@ int main()
     start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < N; i++)
     {
-        b->rookAttacksGen2();
     }
     auto duration3 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
     std::cout << "Duration: " << duration3.count() << " microseconds" << std::endl;
@@ -66,6 +58,9 @@ int main()
     }
     auto duration4 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
     std::cout << "Clock Duration: " << duration4.count() << " microseconds" << std::endl;
+
+    bShow(b->wA);
+    bShow(b->bA);
 
     //  std::cout << "Function score is " << (float)(i2) / i * 100 << "% of the max." << std::endl;
     //*/

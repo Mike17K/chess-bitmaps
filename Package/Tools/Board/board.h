@@ -36,7 +36,6 @@ public:
     Board(char state[]);
 
     void rookAttacksGen();
-    void rookAttacksGen2();
     void nightAttacksGen();
     void qeenAttacksGen();
     void kingAttacksGen();
