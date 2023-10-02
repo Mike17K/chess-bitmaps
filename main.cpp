@@ -23,7 +23,7 @@ int main()
       0  1  2  3  4  5  6  7
     */
 
-    Board *b = new Board("1nbqkbn1/pppppppp/8/3r2Q/8/8/PPPPPPPP/1NBQKBN1 w KQkq - 0 1");
+    Board *b = new Board("1nbqkbn1/ppppp2p/8/3p2Q/8/8/PPPPPPPP/1NBQKBN1 w KQkq - 0 1");
 
     bShow(b->wK | b->bK | b->wQ | b->bQ | b->wN | b->bN | b->wB | b->bB | b->wR | b->bR | b->bp | b->wp);
     //*
@@ -40,7 +40,7 @@ int main()
     start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < N; i++)
     {
-        b->qeenAttacksGen();
+        b->pownAttacksGen();
     }
     auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
     std::cout << "Duration: " << duration2.count() << " microseconds" << std::endl;

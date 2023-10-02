@@ -360,3 +360,59 @@ void Board::qeenAttacksGen()
     this->wA |= attacking_sq_w; // add to the array the extra attacks
     this->bA |= attacking_sq_b; // add to the array the extra attacks
 }
+
+void Board::kingAttacksGen()
+{
+    uint64_t tmp_w = this->wK; // for white
+    uint64_t tmp_b = this->bK; // for black
+
+    uint64_t attacking_sq_w = 0;
+    uint64_t attacking_sq_b = 0;
+
+    int directions[8] = {9, 7, -9, -7, -8, 1, 8, -1};
+    // based of the directions order we put the limit testing here
+    uint64_t limitboards[8] = {Rank8BB | FileHBB, Rank8BB | FileABB, Rank1BB | FileABB, Rank1BB | FileHBB, Rank1BB, FileHBB, Rank8BB, FileABB};
+
+    uint64_t blackPieces = this->bB | this->bN | this->bR | this->bp | this->bQ | this->bK; // posibly make it class atr
+    uint64_t whitePieces = this->wB | this->wN | this->wR | this->wp | this->wQ | this->wK; // this too
+    uint64_t allPieces = blackPieces | whitePieces;
+
+    for (int direction = 0; direction < 8; direction++)
+    { // for each direction
+        tmp_w = this->wK;
+        tmp_b = this->bK;
+        tmp_w &= ~limitboards[direction]; // this line is clearing if the limits are reached
+        tmp_b &= ~limitboards[direction]; // this line is clearing if the limits are reached
+
+        // new pos calculation
+        uint64_t new_pos_w = (directions[direction] < 0) ? tmp_w >> -directions[direction] : tmp_w << directions[direction];
+        uint64_t new_pos_b = (directions[direction] < 0) ? tmp_b >> -directions[direction] : tmp_b << directions[direction];
+
+        attacking_sq_w |= new_pos_w; // attacking sq are also the sq of the intersactions when there are same color pieces too
+        attacking_sq_b |= new_pos_b; // attacking sq are also the sq of the intersactions when there are same color pieces too
+
+        // set last position to new position
+        tmp_w = new_pos_w;
+        tmp_b = new_pos_b;
+    }
+    this->wA |= attacking_sq_w; // add to the array the extra attacks
+    this->bA |= attacking_sq_b; // add to the array the extra attacks
+}
+
+void Board::pownAttacksGen()
+{
+    uint64_t tmp_w = this->wp; // for white
+    uint64_t tmp_b = this->bp; // for black
+
+    uint64_t attacking_sq_w = 0;
+    uint64_t attacking_sq_b = 0;
+
+    attacking_sq_w |= (tmp_w << 7) & ~FileHBB; // left attack
+    attacking_sq_w |= (tmp_w << 9) & ~FileABB; // right attack
+
+    attacking_sq_b |= (tmp_b >> 7) & ~FileABB; // left attack
+    attacking_sq_b |= (tmp_b >> 9) & ~FileHBB; // right attack
+
+    this->wA |= attacking_sq_w; // add to the array the extra attacks
+    this->bA |= attacking_sq_b; // add to the array the extra attacks
+}
