@@ -1,4 +1,5 @@
 #include "./display.h"
+#include "../../Tools/Board/board.h"
 
 void bShow(uint64_t bittmap)
 {
@@ -32,3 +33,39 @@ void bShow(uint64_t bittmap)
     }
     cout << "================" << endl;
 }
+
+void BShow(Board b){};
+/*
+    uint64_t p = 0x100000000000000;
+
+    cout << "================" << endl;
+    for (int i = 0; i < 64; i++)
+    {
+        cout << "[♔]"
+             << " ";
+
+        cout << (((b.wK & p) > 0) ? "♔" : "");
+        cout << (((b.bK & p) > 0) ? "♚" : "");
+        cout << (((b.wQ & p) > 0) ? "♕" : "");
+        cout << (((b.bQ & p) > 0) ? "♛" : "");
+        cout << (((b.wB & p) > 0) ? "♗" : "");
+        cout << (((b.bB & p) > 0) ? "♝" : "");
+        cout << (((b.wN & p) > 0) ? "♘" : "");
+        cout << (((b.bN & p) > 0) ? "♞" : "");
+        cout << (((b.wp & p) > 0) ? "♙" : "");
+        cout << (((b.bp & p) > 0) ? "♟" : "");
+        cout << (((b.wR & p) > 0) ? "♖" : "");
+        cout << (((b.bR & p) > 0) ? "♜" : "");
+        cout << " ";
+
+        p = p << 1;
+
+        if ((i + 1) % 8 == 0)
+        {
+            p = 0x100000000000000;
+            cout << endl;
+        }
+    }
+    cout << "================" << endl;
+}
+*/

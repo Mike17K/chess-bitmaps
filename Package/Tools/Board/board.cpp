@@ -470,31 +470,33 @@ uint64_t Board::genMovesSq(uint64_t sq)
     }
     else if (sq & this->bQ)
     {
-        cout << "black queen" << endl;
+        uint64_t bQ_attacks = this->queenAttacksGen(false);
+        // check discover attacks
+        moves |= bQ_attacks ^ (blackPieces & bQ_attacks);
     }
-    else if (sq & this->wK) // fix add checks for existing rook and the middle sq should be empty
+    else if (sq & this->wK)
     {
         // white king
         uint64_t wK_attacks = this->kingAttacksGen(true);
-        moves = wK_attacks & ~this->bA;
+        moves = wK_attacks & ~this->bA & ~whitePieces;
 
         // O-O castling
-        moves |= ((0x000000000000000E & ~this->bA & ~(allPieces ^ this->wK)) == 0x060000000000000E && this->castlingK) ? 0x0000000000000002 : 0;
+        moves |= ((0x0000000000000070 & ~this->bA & ~(allPieces ^ this->wK)) == 0x0000000000000070 && this->castlingK && ((this->wR & 0x0000000000000080) == 0x0000000000000080)) ? 0x0000000000000040 : 0;
 
         // O-O-O castling
-        moves |= ((0x0000000000000038 & ~this->bA & ~(allPieces ^ this->wK)) == 0x0000000000000038 && this->castlingQ) ? 0x0000000000000040 : 0;
+        moves |= ((0x000000000000001C & ~this->bA & ~(allPieces ^ this->wK)) == 0x000000000000001C && this->castlingQ && ((this->wR & 0x0000000000000001) == 0x0000000000000001)) ? 0x0000000000000004 : 0;
     }
-    else if (sq & this->bK) // fix add checks for existing rook and the middle sq should be empty
+    else if (sq & this->bK)
     {
         // black king
         uint64_t bK_attacks = this->kingAttacksGen(false);
-        moves = bK_attacks & ~this->wA;
+        moves = bK_attacks & ~this->wA & ~blackPieces;
 
         // O-O castling
-        moves |= ((0x0E00000000000000 & ~this->wA & ~(allPieces ^ this->bK)) == 0x0E00000000000000 && this->castlingk) ? 0x0200000000000000 : 0;
+        moves |= (((0x7000000000000000 & (~this->wA) & ~(allPieces ^ this->bK)) == 0x7000000000000000) && this->castlingk && ((this->bR & 0x8000000000000000) == 0x8000000000000000)) ? 0x4000000000000000 : 0;
 
         // O-O-O castling
-        moves |= ((0x3800000000000000 & ~this->wA & ~(allPieces ^ this->bK)) == 0x3800000000000000 && this->castlingq) ? 0x2000000000000000 : 0;
+        moves |= ((0x1C00000000000000 & ~this->wA & ~(allPieces ^ this->bK)) == 0x1C00000000000000 && this->castlingq && ((this->bR & 0x0100000000000000) == 0x0100000000000000)) ? 0x0400000000000000 : 0;
     }
 
     return moves;

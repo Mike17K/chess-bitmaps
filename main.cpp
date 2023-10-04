@@ -23,8 +23,8 @@ int main()
     0  1  2  3  4  5  6  7
   */
 
-  // Board *b = new Board("1nbqkbn1/ppppp2p/8/3Q2Q/8/8/PPPPPPPP/1NBQKBN1 w KQkq - 0 1");
-  Board *b = new Board("3k4/8/8/8/8/8/8/2R1KBNR w KQkq - 0 1");
+  Board *b = new Board("1nbqk2r/ppppp2p/8/8/8/8/PPPPPPPP/R3KBN1 w KQkq - 0 1");
+  // Board *b = new Board("3k4/8/8/8/8/8/8/R12K3 w KQkq - 0 1");
 
   bShow(b->wK | b->bK | b->wQ | b->bQ | b->wN | b->bN | b->wB | b->bB | b->wR | b->bR | b->bp | b->wp);
   //*
@@ -47,10 +47,8 @@ int main()
   b->rookAttacksGen();
   b->pownAttacksGen();
 
-  uint64_t sq = b->wK;
+  uint64_t sq = b->bK;
   uint64_t moves = b->genMovesSq(sq);
-  cout << "WK Moves: " << endl;
+  cout << "bK Moves: " << endl;
   bShow(moves);
-  cout << "bA: " << endl;
-  bShow(b->bA);
 }
