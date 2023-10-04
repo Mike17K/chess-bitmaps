@@ -140,7 +140,7 @@ void Board::setBoard(char txt[])
     // cout << txt + i << endl;
 };
 
-void Board::nightAttacksGen()
+uint64_t Board::nightAttacksGen(bool white)
 {
 
     uint64_t attacking_sq_w = 0;
@@ -183,9 +183,11 @@ void Board::nightAttacksGen()
 
     this->wA |= attacking_sq_w; // finished here calculating the w N posible moves
     this->bA |= attacking_sq_b; // finished here calculating the w N posible moves
+
+    return (white) ? attacking_sq_w : attacking_sq_b;
 };
 
-void Board::rookAttacksGen()
+uint64_t Board::rookAttacksGen(bool white)
 {
     uint64_t tmp_w = this->wR; // for white
     uint64_t tmp_b = this->bR; // for black
@@ -226,11 +228,6 @@ void Board::rookAttacksGen()
             attacking_sq_w |= new_pos_w; // attacking sq are also the sq of the intersactions when there are same color pieces too
             attacking_sq_b |= new_pos_b; // attacking sq are also the sq of the intersactions when there are same color pieces too
 
-            cout << "Black: " << endl;
-            bShow(attacking_sq_b);
-            cout << "White: " << endl;
-            bShow(attacking_sq_w);
-
             // check for intersactions with same color pieces
             // check for intersactions with oposite color pieces
             // remove the intersactions from the new_pos cause the pieces can now overlap
@@ -244,9 +241,11 @@ void Board::rookAttacksGen()
     }
     this->wA |= attacking_sq_w; // add to the array the extra attacks
     this->bA |= attacking_sq_b; // add to the array the extra attacks
+
+    return (white) ? attacking_sq_w : attacking_sq_b;
 };
 
-void Board::bishopAttacksGen()
+uint64_t Board::bishopAttacksGen(bool white)
 {
 
     uint64_t tmp_w = this->wB; // for white
@@ -302,9 +301,11 @@ void Board::bishopAttacksGen()
     this->wA |= attacking_sq_w; // add to the array the extra attacks
     this->bA |= attacking_sq_b; // add to the array the extra attacks
                                 // uint64_t different_intersactions_b
+
+    return (white) ? attacking_sq_w : attacking_sq_b;
 }
 
-void Board::qeenAttacksGen()
+uint64_t Board::queenAttacksGen(bool white)
 {
     uint64_t tmp_w = this->wQ; // for white
     uint64_t tmp_b = this->bQ; // for black
@@ -359,9 +360,11 @@ void Board::qeenAttacksGen()
     }
     this->wA |= attacking_sq_w; // add to the array the extra attacks
     this->bA |= attacking_sq_b; // add to the array the extra attacks
+
+    return (white) ? attacking_sq_w : attacking_sq_b;
 }
 
-void Board::kingAttacksGen()
+uint64_t Board::kingAttacksGen(bool white)
 {
     uint64_t tmp_w = this->wK; // for white
     uint64_t tmp_b = this->bK; // for black
@@ -397,9 +400,11 @@ void Board::kingAttacksGen()
     }
     this->wA |= attacking_sq_w; // add to the array the extra attacks
     this->bA |= attacking_sq_b; // add to the array the extra attacks
+
+    return (white) ? attacking_sq_w : attacking_sq_b;
 }
 
-void Board::pownAttacksGen()
+uint64_t Board::pownAttacksGen(bool white)
 {
     uint64_t tmp_w = this->wp; // for white
     uint64_t tmp_b = this->bp; // for black
@@ -415,4 +420,82 @@ void Board::pownAttacksGen()
 
     this->wA |= attacking_sq_w; // add to the array the extra attacks
     this->bA |= attacking_sq_b; // add to the array the extra attacks
+
+    return (white) ? attacking_sq_w : attacking_sq_b;
+}
+
+uint64_t Board::genMovesSq(uint64_t sq)
+{
+    uint64_t moves = 0;
+
+    uint64_t blackPieces = this->bB | this->bN | this->bR | this->bp | this->bQ | this->bK; // posibly make it class atr
+    uint64_t whitePieces = this->wB | this->wN | this->wR | this->wp | this->wQ | this->wK; // this too
+    uint64_t allPieces = blackPieces | whitePieces;
+
+    if (sq & this->bp)
+    {
+        cout << "black pawn" << endl;
+    }
+    else if (sq & this->wp)
+    {
+        cout << "white pawn" << endl;
+    }
+    else if (sq & this->bN)
+    {
+        cout << "black night" << endl;
+    }
+    else if (sq & this->wN)
+    {
+        cout << "white night" << endl;
+    }
+    else if (sq & this->wB)
+    {
+        cout << "white bishop" << endl;
+    }
+    else if (sq & this->bB)
+    {
+        cout << "black bishop" << endl;
+    }
+    else if (sq & this->wR)
+    {
+        cout << "white rook" << endl;
+    }
+    else if (sq & this->bR)
+    {
+        cout << "black rook" << endl;
+    }
+    else if (sq & this->wQ)
+    {
+        cout << "white queen" << endl;
+    }
+    else if (sq & this->bQ)
+    {
+        cout << "black queen" << endl;
+    }
+    else if (sq & this->wK) // fix add checks for existing rook and the middle sq should be empty
+    {
+        // white king
+        uint64_t wK_attacks = this->kingAttacksGen(true);
+        moves = wK_attacks & ~this->bA;
+
+        // O-O castling
+        moves |= ((0x000000000000000E & ~this->bA & ~(allPieces ^ this->wK)) == 0x060000000000000E && this->castlingK) ? 0x0000000000000002 : 0;
+
+        // O-O-O castling
+        moves |= ((0x0000000000000038 & ~this->bA & ~(allPieces ^ this->wK)) == 0x0000000000000038 && this->castlingQ) ? 0x0000000000000040 : 0;
+    }
+    else if (sq & this->bK) // fix add checks for existing rook and the middle sq should be empty
+    {
+        // black king
+        uint64_t bK_attacks = this->kingAttacksGen(false);
+        moves = bK_attacks & ~this->wA;
+
+        // O-O castling
+        moves |= ((0x0E00000000000000 & ~this->wA & ~(allPieces ^ this->bK)) == 0x0E00000000000000 && this->castlingk) ? 0x0200000000000000 : 0;
+
+        // O-O-O castling
+        moves |= ((0x3800000000000000 & ~this->wA & ~(allPieces ^ this->bK)) == 0x3800000000000000 && this->castlingq) ? 0x2000000000000000 : 0;
+    }
+
+    return moves;
 }

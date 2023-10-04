@@ -34,15 +34,16 @@ public:
 
     Board();
     Board(char state[]);
-
-    void rookAttacksGen();
-    void nightAttacksGen();
-    void qeenAttacksGen();
-    void kingAttacksGen();
-    void pownAttacksGen();
-    void bishopAttacksGen();
-
     void setBoard(char state[]);
+
+    uint64_t rookAttacksGen(bool white = true);
+    uint64_t nightAttacksGen(bool white = true);
+    uint64_t queenAttacksGen(bool white = true);
+    uint64_t kingAttacksGen(bool white = true);
+    uint64_t pownAttacksGen(bool white = true);
+    uint64_t bishopAttacksGen(bool white = true);
+
+    uint64_t genMovesSq(uint64_t sq);
 
 private:
 };
